@@ -1,0 +1,108 @@
+* SpellChecker by Isak Sky
+
+** Assumptions:
+
+1. All vowels can be wrong, and can actually be any other vowel.
+2. Any suggestion yielded must be found in the dictionary.
+3. When it is not possible to both avoid printing "NO SUGGESTION" and
+   to keep the solution under O(n) (where n is the length of the
+   dictionary), the latter is more important.
+4. Making Soundex (http://en.wikipedia.org/wiki/Soundex) friendly
+   assumptions then using Soundex would be cheating.
+
+** Note:
+
+The programs behavior if the word was already correct was not
+specified, so I made it print "OK" in such cases.
+
+I designed the program so that at each stage, it's thoroughness is
+tunable. It can go through every possible mutation, or give up if
+there are too many.
+
+** Analysis of time complexity
+
+Depending on parameters:
+O(1) up to O(m*v), where:
+
+m is the number of ways to remove repeated letters from the word
+v is the number of ways to change vowels in the word, i.e., a^k, where:
+   a is the number of vowels in the alphabet (5)
+   k is the number of vowels in the word
+
+Notes:
+- "m" tends not to be that bad, since each letter can be repeated at
+  most the maximum number of times we have seen that letter be
+  repeated in the dictionary. Based on sample of 5000 words, it was on
+  average 2.88. Code for experiment:
+
+#+BEGIN_SRC ruby
+WORDS.to_a.sample(5000)
+.map {|w| scramble(w)}
+.map {|w| SpellChecker.repeated_letter_fixes(w)}
+.map(&:to_a)
+.map(&:length)
+.reduce(:+) / 5000.0
+# => 2.8754
+#+END_SRC
+
+- "v" tends to be bad. Based on a sample of 100 words, it was on
+  average 4238.4. Code for experiment:
+
+#+BEGIN_SRC ruby
+WORDS.to_a.sample(5000)
+.map {|w| SpellChecker.vowel_mistake_fixes(w)}
+.map(&:to_a)
+.map(&:length)
+.reduce(:+) / 5000.0
+# => 4238.4
+#+END_SRC
+
+** Results
+*** Outrageous results if you take off the cap:
+>MonnebrOMiAcetttaNilIdE => monobromoacetanilide. Num attempts: 40281257
+>pEriasTeeMEddddelllLiTIs => periosteomedullitis. Num attempts: 11767609
+>psEudocenGLoMerrrrute => pseudoconglomerate. Num attempts: 783135
+
+*** Normal results sample
+>wHoSKerer => whiskerer. Num attempts: 78
+>multitudInOUSNeSs => multitudinousness. Num attempts: 1
+>unfaRSigghTed => unfarsighted. Num attempts: 1254
+>ZimbezeaN => Zambezian. Num attempts: 138
+>SttttacKyarD => stackyard. Num attempts: 54
+>adaY => aday. Num attempts: 1
+>TeUtoNic => Teutonic. Num attempts: 1
+>unsanguiNEness => unsanguineness. Num attempts: 1
+>hExxudaCtyllY => hexadactyly. Num attempts: 260
+>hEterilOgeus => heterologous. Num attempts: 393
+>tootlEr => tootler. Num attempts: 1
+>sCaRefY => scarify. Num attempts: 5
+>GAEteloN => Gaetulan. Num attempts: 24
+>KrushnuiTic => Krishnaitic. Num attempts: 403
+>unItentACular => unitentacular. Num attempts: 1
+>dOUbbblEton => doubleton. Num attempts: 1254
+>OtTo => otto. Num attempts: 1
+>PilotleSs => pilotless. Num attempts: 1
+>mmmmaccraccheRia => macrochiria. Num attempts: 25436
+>unpRacTiccccabilItY => unpracticability. Num attempts: 31254
+>gggoldeNwunggg => goldenwing. Num attempts: 510
+>pAEnolllA => paenula. Num attempts: 1901
+>bbupatCHad => bepatched. Num attempts: 306
+>kAcHiN => kachin. Num attempts: 1
+>mISocApniSt => misocapnist. Num attempts: 1
+>mmmmolLUSCoid => molluscoid. Num attempts: 1254
+>hoOliganIzi => hooliganize. Num attempts: 5
+>uncomPlaeniNgglY => uncomplainingly. Num attempts: 6265
+
+*** Some words that are unfixable with the cap set:
+>NO SUGGESTION for irrrrETErrrrOENTeric. Num attempts: 234935
+>NO SUGGESTION for voscoripppperICardiAl. Num attempts: 234935
+>NO SUGGESTION for ElecTrooRrrrrigutioN. Num attempts: 234935
+>NO SUGGESTION for puriussOppHAgiTis. Num attempts: 234935
+>NO SUGGESTION for PRotarisiurrrudaE. Num attempts: 234935
+
+** How to run
+
+1. cd into root directory
+2. bin/bogus_word_generator | bin/spellchecker
+
+Tested with ruby 1.9.3p125.

@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+require 'set'
+require_relative '../lib/spellchecker/dicts.rb'
+
+module SpellChecker
+  VOWELS = ['a', 'e', 'i', 'o', 'u']
+  WORDS_ARRAY = WORDS.to_a
+
+  def self.scramble word
+    bogus_word = word.chars.to_a.reduce([]) do |ary, char|
+      is_vowel = VOWELS.include?(char.downcase)
+      r = rand
+      if r < 0.10 && !is_vowel
+        (rand(4) + 1).times { ary << char }
+      elsif r < 0.30
+        ary << char.upcase
+      elsif r < 0.5 && is_vowel
+        ary << VOWELS.sample
+      else
+        ary << char
+      end
+      ary
+    end.join
+  end
+
+  while true
+    puts scramble(WORDS_ARRAY.sample)
+    #sleep(0.3)
+  end
+end

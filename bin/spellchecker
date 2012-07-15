@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+require_relative '../lib/spellchecker.rb'
+
+module SpellChecker
+  while true
+    print ">"
+    word = gets
+    puts spellcheck word
+  end
+end
