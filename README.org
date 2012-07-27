@@ -94,46 +94,46 @@ WORDS.to_a.sample(5000)
 
 ** Results
 *** Outrageous results if you take off the cap:
->MonnebrOMiAcetttaNilIdE => monobromoacetanilide. Num attempts: 40281257
->pEriasTeeMEddddelllLiTIs => periosteomedullitis. Num attempts: 11767609
->psEudocenGLoMerrrrute => pseudoconglomerate. Num attempts: 783135
+>MonnebrOMiAcetttaNilIdE => monobromoacetanilide. Num attempts: 40281257 \\
+>pEriasTeeMEddddelllLiTIs => periosteomedullitis. Num attempts: 11767609 \\
+>psEudocenGLoMerrrrute => pseudoconglomerate. Num attempts: 783135 \\
 
 *** Normal results sample
->wHoSKerer => whiskerer. Num attempts: 78
->multitudInOUSNeSs => multitudinousness. Num attempts: 1
->unfaRSigghTed => unfarsighted. Num attempts: 1254
->ZimbezeaN => Zambezian. Num attempts: 138
->SttttacKyarD => stackyard. Num attempts: 54
->adaY => aday. Num attempts: 1
->TeUtoNic => Teutonic. Num attempts: 1
->unsanguiNEness => unsanguineness. Num attempts: 1
->hExxudaCtyllY => hexadactyly. Num attempts: 260
->hEterilOgeus => heterologous. Num attempts: 393
->tootlEr => tootler. Num attempts: 1
->sCaRefY => scarify. Num attempts: 5
->GAEteloN => Gaetulan. Num attempts: 24
->KrushnuiTic => Krishnaitic. Num attempts: 403
->unItentACular => unitentacular. Num attempts: 1
->dOUbbblEton => doubleton. Num attempts: 1254
->OtTo => otto. Num attempts: 1
->PilotleSs => pilotless. Num attempts: 1
->mmmmaccraccheRia => macrochiria. Num attempts: 25436
->unpRacTiccccabilItY => unpracticability. Num attempts: 31254
->gggoldeNwunggg => goldenwing. Num attempts: 510
->pAEnolllA => paenula. Num attempts: 1901
->bbupatCHad => bepatched. Num attempts: 306
->kAcHiN => kachin. Num attempts: 1
->mISocApniSt => misocapnist. Num attempts: 1
->mmmmolLUSCoid => molluscoid. Num attempts: 1254
->hoOliganIzi => hooliganize. Num attempts: 5
->uncomPlaeniNgglY => uncomplainingly. Num attempts: 6265
+>wHoSKerer => whiskerer. Num attempts: 78 \\
+>multitudInOUSNeSs => multitudinousness. Num attempts: 1 \\
+>unfaRSigghTed => unfarsighted. Num attempts: 1254 \\
+>ZimbezeaN => Zambezian. Num attempts: 138 \\
+>SttttacKyarD => stackyard. Num attempts: 54 \\
+>adaY => aday. Num attempts: 1 \\
+>TeUtoNic => Teutonic. Num attempts: 1 \\
+>unsanguiNEness => unsanguineness. Num attempts: 1 \\
+>hExxudaCtyllY => hexadactyly. Num attempts: 260 \\
+>hEterilOgeus => heterologous. Num attempts: 393 \\
+>tootlEr => tootler. Num attempts: 1 \\
+>sCaRefY => scarify. Num attempts: 5 \\
+>GAEteloN => Gaetulan. Num attempts: 24 \\
+>KrushnuiTic => Krishnaitic. Num attempts: 403 \\
+>unItentACular => unitentacular. Num attempts: 1 \\
+>dOUbbblEton => doubleton. Num attempts: 1254 \\
+>OtTo => otto. Num attempts: 1 \\
+>PilotleSs => pilotless. Num attempts: 1 \\
+>mmmmaccraccheRia => macrochiria. Num attempts: 25436 \\
+>unpRacTiccccabilItY => unpracticability. Num attempts: 31254 \\
+>gggoldeNwunggg => goldenwing. Num attempts: 510 \\
+>pAEnolllA => paenula. Num attempts: 1901 \\
+>bbupatCHad => bepatched. Num attempts: 306 \\
+>kAcHiN => kachin. Num attempts: 1 \\
+>mISocApniSt => misocapnist. Num attempts: 1 \\
+>mmmmolLUSCoid => molluscoid. Num attempts: 1254 \\
+>hoOliganIzi => hooliganize. Num attempts: 5 \\
+>uncomPlaeniNgglY => uncomplainingly. Num attempts: 6265 \\
 
 *** Some words that are unfixable with the cap set:
->NO SUGGESTION for irrrrETErrrrOENTeric. Num attempts: 234935
->NO SUGGESTION for voscoripppperICardiAl. Num attempts: 234935
->NO SUGGESTION for ElecTrooRrrrrigutioN. Num attempts: 234935
->NO SUGGESTION for puriussOppHAgiTis. Num attempts: 234935
->NO SUGGESTION for PRotarisiurrrudaE. Num attempts: 234935
+>NO SUGGESTION for irrrrETErrrrOENTeric. Num attempts: 234935 \\
+>NO SUGGESTION for voscoripppperICardiAl. Num attempts: 234935 \\
+>NO SUGGESTION for ElecTrooRrrrrigutioN. Num attempts: 234935 \\
+>NO SUGGESTION for puriussOppHAgiTis. Num attempts: 234935 \\
+>NO SUGGESTION for PRotarisiurrrudaE. Num attempts: 234935 \\
 
 ** How to run
 
