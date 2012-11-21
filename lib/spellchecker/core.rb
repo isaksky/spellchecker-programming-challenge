@@ -1,6 +1,53 @@
+class Module
+  # because some things take too long to compute
+  def def_saved_constant name
+    serialization_path = "#{Dir.pwd}/#{name}.lolrubby"
+    if File.exists? serialization_path
+      v = Marshal::load File.read(serialization_path)
+    else
+      v = yield
+      File.open(serialization_path, 'w') {|f| f.write(Marshal::dump(v)) }
+    end
+    const_set name, v
+  end
+end
+
 module SpellChecker
   VOWELS = Set.new ['A', 'E', 'I', 'O', 'U']
-  MAX_ATTEMPTS = WORDS.length - 1 # ;-)
+
+  self.def_saved_constant "LOWEST_WORD_LETTER_COUNT" do
+    WORDS.min_by {|w| w.size}.size
+  end
+
+  self.def_saved_constant "HIGHEST_WORD_LETTER_COUNT" do
+    WORDS.max_by {|w| w.size}.size
+  end
+
+  self.def_saved_constant "LONGEST_WORD_BY_CHAR_SEQUENCE" do
+    UPCASED_WORDS.reduce Hash.new do |h, word|
+      char_seq = word.chars.to_a.uniq.inspect #convert to string with inspect because we don't need to use it as array
+      if h[char_seq]
+        h[char_seq] = word if word.size > h[char_seq].size
+      else
+        h[char_seq] = word
+      end
+      h
+    end
+  end
+
+  self.def_saved_constant "MAX_CONSEC_LETTERS_COUNT" do
+    UPCASED_WORDS.reduce Hash.new do |h, word|
+      letter_groups = split_by_letter word
+      letter_groups.each do |letter_group|
+        letter = letter_group[0]
+        previous_best = h[letter] || 0
+        if letter_group.size > previous_best
+          h[letter] = letter_group.size
+        end
+      end
+      h
+    end
+  end
 
   class << self
     def spellcheck word, words_dict = WORDS, upcased_words = UPCASED_WORDS
@@ -17,24 +64,15 @@ module SpellChecker
         elsif real_word
           return "#{word} => #{real_word}. Num attempts: #{num_attempts}"
         end
-        if num_attempts >= MAX_ATTEMPTS
-          return "NO SUGGESTION for #{word}. Num attempts: #{num_attempts}"
-        end
       end
-      word_checker.call word
+      word = word_without_unseen_letter_repetitions word
+      word_checker.call word # trying to break out as early as we can
 
-      # Word was not trivial to fix. Lets try fixing repeated letters.
-      # Only look at the first X, so we don't explode
-      repeated_letter_fixes = repeated_letter_fixes(word) #take MAX_REPATED_LETTER_FIXES
-      repeated_letter_fixes.each do |word_letter_repeat_fix|
-        word_checker.call word_letter_repeat_fix, words_dict
-        # Word was not fixed by merely getting rid of a repeated letter.
-        # Lets try fixing incorrect vowels.
-        # Again, only look at first Y, so we don't explode.
-        vowel_fixes = vowel_mistake_fixes(word_letter_repeat_fix) #take MAX_VOWEL_MISTAKE_FIXES
-        vowel_fixes.each do |word_vowel_variation|
-          word_checker.call word_vowel_variation
-        end
+      # if control reaches this point, fixing the word was not as trivial as just
+      # removing the unseen letter repetitions. now we have to try substituting vowels
+      vowel_substitutions(word).each do |word_vowel_variation|
+        longest_word_with_char_sequence = LONGEST_WORD_BY_CHAR_SEQUENCE[word_vowel_variation.upcase.chars.to_a.uniq.inspect]
+        word_checker.call longest_word_with_char_sequence if longest_word_with_char_sequence
       end
       # All variations tried
       return "NO SUGGESTION for #{word}. Num attempts: #{num_attempts}"
@@ -48,14 +86,12 @@ module SpellChecker
     end
 
     def word_check_with_case_variations word, words_dict = WORDS, upcased_words = UPCASED_WORDS
-      return nil unless upcased_words.include? word.upcase
-      # Find correct capitalization
-      ([word] + case_fixes(word)).find {|w| words_dict.include?(w) }
+      upcased_words.include?(word.upcase) && ([word] + case_fixes(word)).find {|w| words_dict.include?(w) }
     end
 
     # Generate a stream of words based on the initial word with vowels substituted with other vowels.
-    # For example: vowel_mistake_fixes("bed").take(2) == ["bed", "bad", "bid"]
-    def vowel_mistake_fixes word
+    # For example: vowel_substitutions("bed").take(2) == ["bed", "bad", "bid"]
+    def vowel_substitutions word
       # Array of arrays that contains the possible letters for each position in the word
       possible_letters_by_pos = Array.new
 
@@ -75,39 +111,15 @@ module SpellChecker
       end
     end
 
-    # Generate a stream of words based on initial word that chomps repeated letters
-    # one at the time. (Except the first one, which strips all repeated letters to
-    # the maximum length ever observed in dictionary.)
-    # For example: repeated_letter_fixes("jjoooobbb").to_a == ["jjoobb", "joobb", "joob", "job"]
-    def repeated_letter_fixes word, max_consec_letters = MAX_CONSEC_LETTERS_COUNT
-      letter_groups = split_by_letter(word)
-      remove_unseen_letter_repetitions! letter_groups, max_consec_letters
-
-      Enumerator.new do |yielder|
-        yielder.yield letter_groups.join # returns the the initial correction done above
-        possible_letter_groups_by_index = letter_groups.reduce([]) do |memo, letter_group|
-          possible_letter_groups = []
-          letter = letter_group[0].upcase
-          letter_group.size.downto(1) do |i|
-            possible_letter_groups << letter * i
-          end
-          memo << possible_letter_groups
-        end
-
-        letter_group_combinations = lazy_cartesian_product possible_letter_groups_by_index
-        letter_group_combinations.each do |letter_group|
-          yielder.yield letter_group.join
-        end
-      end
-    end
-
-    def remove_unseen_letter_repetitions! letter_groups, max_consec_letters = MAX_CONSEC_LETTERS_COUNT
+    def word_without_unseen_letter_repetitions word, max_consec_letters = MAX_CONSEC_LETTERS_COUNT
+      letter_groups = split_by_letter word
       letter_groups.each do |letter_group|
         letter = letter_group[0].upcase
         max = max_consec_letters[letter]
         excess_chars = letter_group.size - max
         excess_chars.times { letter_group.chop! }
       end
+      letter_groups.join
     end
   end
 end
