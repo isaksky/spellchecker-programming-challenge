@@ -15,15 +15,15 @@ end
 module SpellChecker
   VOWELS = Set.new ['A', 'E', 'I', 'O', 'U']
 
-  self.def_saved_constant "LOWEST_WORD_LETTER_COUNT" do
+  def_saved_constant "LOWEST_WORD_LETTER_COUNT" do
     WORDS.min_by {|w| w.size}.size
   end
 
-  self.def_saved_constant "HIGHEST_WORD_LETTER_COUNT" do
+  def_saved_constant "HIGHEST_WORD_LETTER_COUNT" do
     WORDS.max_by {|w| w.size}.size
   end
 
-  self.def_saved_constant "LONGEST_WORD_BY_CHAR_SEQUENCE" do
+  def_saved_constant "LONGEST_WORD_BY_CHAR_SEQUENCE" do
     UPCASED_WORDS.reduce Hash.new do |h, word|
       char_seq = word.chars.to_a.uniq.inspect #convert to string with inspect because we don't need to use it as array
       if h[char_seq]
@@ -35,7 +35,7 @@ module SpellChecker
     end
   end
 
-  self.def_saved_constant "MAX_CONSEC_LETTERS_COUNT" do
+  def_saved_constant "MAX_CONSEC_LETTERS_COUNT" do
     UPCASED_WORDS.reduce Hash.new do |h, word|
       letter_groups = split_by_letter word
       letter_groups.each do |letter_group|
